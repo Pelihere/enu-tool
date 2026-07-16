@@ -1,0 +1,16 @@
+from port_scanner import port_scan
+from smb_Netbios_enu import Enumeration as SNE
+from validators import ipv4, domain
+
+
+
+
+def get_basec_info():
+    target = input("[+] Enter target to scan : ")
+    if (ipv4(target) or domain(target)):
+        openPorts = port_scan.scan(target=target)
+
+    return openPorts
+
+def enumerationn_performer():
+    pass
