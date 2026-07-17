@@ -1,28 +1,27 @@
-this tool is going to be a modular programm
-tool is command base
+# enu-tool
 
+this tool is command base
 
 input :
-    ip address or domain name
+    Targets domain or id address
+
 
 steps :
 
-1.port scanning ✅
-2.perform Enumeration base on the open ports:
-
-        1. NetBIOS(Network Basic Input Output System) ✅
-        2. SNMP(Simple Network Management Protocol)
-        3. LDAP 
-        4. NTP 
-        5. SMTP 
-        6. DNS Enumeration using Zone Transfer
-        7. SMB ✅
+1. user input
+2. port scanning ✅
+3. type on enumeration:
+    3.1. Netbios and SMB enumeration ✅
+    3.2. SNMP enumeration
+    3.3.
+    3.4.
+    3.5.
+    3.6.
+    3.7.
+    
+4. json output
 
 
 output :
-    usernames, machine names, shares, services, and other assets
-    os fingerprinting 
-    banner grabbing
-    possible vulnrabilities 
 
-    clean user friendly output
+json output for all the enumerations

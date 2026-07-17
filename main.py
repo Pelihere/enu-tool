@@ -5,8 +5,9 @@ from validators import ipv4, domain
 
 
 ports = {
-    "netbios udp" : 137,
-    "netbios tcp" : [139, 445],
+    137 : SNE.service_name_scan,
+    139 : SNE.rpc_enumeration,
+    445 : SNE.rpc_enumeration,
     "snmp queries" : 161,
     "snmp traps" : 162
 }
@@ -19,5 +20,5 @@ def get_basec_info():
 
     return openPorts
 
-def enumerationn_performer():
+def enumerationn_executer():
     pass
