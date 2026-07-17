@@ -12,7 +12,7 @@ steps :
 2. port scanning ✅
 3. type on enumeration:
     3.1. Netbios and SMB enumeration ✅
-    3.2. SNMP enumeration
+    3.2. SNMP enumeration ✅
     3.3.
     3.4.
     3.5.
