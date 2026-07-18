@@ -1,7 +1,7 @@
 import subprocess
 import platform
 
-class Enumeration:
+class SMB_Netbios_Enumeration:
 
     def __init__(self, target):
         self.target = target

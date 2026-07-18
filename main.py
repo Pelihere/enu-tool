@@ -1,5 +1,7 @@
 from port_scanner import port_scan
-from smb_Netbios_enu import Enumeration as SNE
+from smb_Netbios_enu import SMB_Netbios_Enumeration as SNE
+from SNMP_enu import SNMP_Enumeration as SE
+from LDAP_enu import LDAP_Enumeration as LE
 from validators import ipv4, domain
 
 

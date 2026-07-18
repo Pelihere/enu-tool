@@ -1,7 +1,7 @@
 import subprocess
 
 
-class LDAP:
+class LDAP_Enumeration:
     def __init__(self, target):
         self.target = target
         self.baseDn = None
