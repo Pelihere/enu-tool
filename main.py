@@ -4,14 +4,6 @@ from validators import ipv4, domain
 
 
 
-ports = {
-    137 : SNE.service_name_scan,
-    139 : SNE.rpc_enumeration,
-    445 : SNE.rpc_enumeration,
-    "snmp queries" : 161,
-    "snmp traps" : 162
-}
-
 
 def get_basec_info():
     target = input("[+] Enter target to scan : ")
@@ -20,5 +12,5 @@ def get_basec_info():
 
     return openPorts
 
-def enumerationn_executer():
+def enumerationn_executer(ports):
     pass

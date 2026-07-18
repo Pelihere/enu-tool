@@ -1,6 +1,5 @@
 import subprocess
 
-
 class Enumeration:
     def __init__(self, target, community="public"):
         self.target = target
@@ -112,3 +111,21 @@ class Enumeration:
 
     def software_enu(self):
         return self.snmp_walker("1.3.6.1.2.1.25.6")
+    
+
+    def run(self):
+        results = {}
+        if not self.version_detection():
+            return None
+        
+        results['system'] = self.system_enu()
+        results['interface'] = self.interface_enu()
+        results['ip'] = self.ip_enu()
+        results['tcp'] = self.tcp_enu()
+        results['udp'] = self.udp_enu()
+        results['icmp'] = self.icmp_enu()
+        results['storage'] = self.storage_enu()
+        results['process'] = self.process_enu()
+        results['software'] = self.software_enu()
+
+        return results
