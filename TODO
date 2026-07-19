@@ -1,1 +1,7 @@
-add smbclient for windows in netbios module
+1. add smbclient for windows in netbios module
+
+2. { Authentication
+    Login
+    sending email
+    Open Relay Test
+    TLS Negotiation } for SMTP module
