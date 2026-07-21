@@ -1,4 +1,12 @@
-1. add smbclient for windows in netbios module
+add command_runner.py for subprocess use in all modules
+
+
+
+1. Netbios moduel
+    a. add smbclient for windows in netbios module
+    b. add srvinfo for server info
+    c. add netshareenum for share enumeration
+
 
 2. { Authentication
     Login

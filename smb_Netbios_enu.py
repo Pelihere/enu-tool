@@ -1,7 +1,7 @@
 import subprocess
 import platform
 
-class SMB_Netbios_Enumeration:
+class SMBNetBIOSEnumeration:
 
     def __init__(self, target):
         self.target = target
@@ -18,24 +18,27 @@ class SMB_Netbios_Enumeration:
             command = ["nmblookup", "-A", self.target]
 
         else:
-            print("Unsupported operating system")
+            print("[-] Unsupported operating system")
             return None
 
         try:
             result = subprocess.run(
                 command,
                 capture_output=True,
-                text=True
+                text=True,
+                timeout=10
             )
 
-            print(f"{tool} is running ...")
+            print(f"[+] running {tool} ...")
 
         except FileNotFoundError:
-            print(f"{tool} is not installed")
+            print(f"[-] {tool} is not installed")
             return None
-
+        except subprocess.TimeoutExpired:
+            print(f"[-] {tool} timed out.")
+            return None
         except Exception as e:
-            print(f"Something went wrong: {e}")
+            print(f"[-] Something went wrong. Error: \n{e}")
             return None
 
         return {
@@ -50,13 +53,19 @@ class SMB_Netbios_Enumeration:
         try:
             smb_res = subprocess.run(["smbclient","-L", f"//{self.target}", "-N"],
                                        capture_output=True, 
-                                       text=True)
-            print("smbcleint is running ...")
+                                       text=True,
+                                       timeout=10
+                                    )
+            print("[+] running smbclient ...")
         except FileNotFoundError:
-            print("smbclient is not installed")
-        
+            print("[-] smbclient is not installed!")
+            return None
+        except subprocess.TimeoutExpired:
+            print(f"[-] smbclient timed out.")
+            return None
         except Exception as e:
-            print(f"something gone wrong, Error : \n {e}")
+            print(f"[-] something went wrong. Error : \n{e}")
+            return None
             
         return {
             "tool": "smbclient",
@@ -88,10 +97,12 @@ class SMB_Netbios_Enumeration:
                         command
                     ],
                     capture_output=True,
-                    text=True
+                    text=True,
+                    timeout=10
                 )
 
                 results[command] = {
+                    "tool" : "rpcclient",
                     "success": res.returncode == 0,
                     "stdout": res.stdout,
                     "stderr": res.stderr,
@@ -100,12 +111,21 @@ class SMB_Netbios_Enumeration:
 
             except FileNotFoundError:
                 results[command] = {
+                    "tool": "rpcclient",
                     "success": False,
-                    "error": "rpcclient is not installed"
+                    "error": "rpcclient is not installed!"
+                }
+
+            except subprocess.TimeoutExpired:
+                results[command] = {
+                    "tool": "rpcclient",
+                    "success": False,
+                    "error": "Command timed out"
                 }
 
             except Exception as e:
                 results[command] = {
+                    "tool": "rpcclient",
                     "success": False,
                     "error": str(e)
                 }
@@ -115,10 +135,10 @@ class SMB_Netbios_Enumeration:
     def run(self, ports):
         results = {}
         if 137 in ports:
-            results['services Name'] = self.service_name_scan()
+            results['services_name'] = self.service_name_scan()
 
-        if 139 in ports or 445 in ports:
-            results['smb info '] = self.smb_scan()
-            results['rpc_info'] = self.rpc_enumeration()
+        if any(port in ports for port in (139, 445)):
+            results['smb'] = self.smb_scan()
+            results['rpc'] = self.rpc_enumeration()
 
         return results
