@@ -3,10 +3,23 @@ from smb_Netbios_enu import SMB_Netbios_Enumeration as SNE
 from SNMP_enu import SNMP_Enumeration as SE
 from LDAP_enu import LDAP_Enumeration as LE
 from SMTP_enu import SMTP_Enumeration as SME
+from DNS_enu import DNS_Enumeration as DE
+from NTP_enu import NTP_Enumeration as NE
+from IPsec_enu import IPsec_Enumeration as IE
 from validators import ipv4, domain
 
-
-
+enumeration_modules = {
+    53: DE,
+    123: NE,
+    161: SE,
+    389: LE,
+    636: LE,
+    25: SME,
+    139: SNE,
+    445: SNE,
+    500: IE,
+    4500: IE,
+}
 
 def get_basec_info():
     target = input("[+] Enter target to scan : ")
@@ -17,3 +30,7 @@ def get_basec_info():
 
 def enumerationn_executer(ports):
     pass
+
+
+if __name__ == "__main__":
+    enumerationn_executer(get_basec_info())
