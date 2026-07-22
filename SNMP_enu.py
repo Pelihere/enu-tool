@@ -34,8 +34,7 @@ class SNMP_Enumeration:
                 self.version = "1"
                 return True
 
-            print("[-] SNMP scan failed with both versions")
-            print(f"Error: {ver1_info.stderr}")
+            print(f"[-] SNMP scan failed with both versions. \nError: {ver1_info.stderr} \n {ver2_info.stderr}")
             return False
 
         except subprocess.TimeoutExpired:
@@ -70,10 +69,16 @@ class SNMP_Enumeration:
                 timeout=5
             )
 
-            return info
+            return {
+               "tool": "snmpwalk",
+                "success": info.returncode == 0,
+                "stdout": info.stdout,
+                "stderr": info.stderr,
+                "returncode": info.returncode
+            }
 
         except subprocess.TimeoutExpired:
-            print(f"SNMP timeout while querying {oid}")
+            print(f"[-] SNMP timeout while querying {oid}")
             return None
 
         except FileNotFoundError:
