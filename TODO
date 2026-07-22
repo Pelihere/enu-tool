@@ -8,8 +8,5 @@ add command_runner.py for subprocess use in all modules
     c. add netshareenum for share enumeration
 
 
-2. { Authentication
-    Login
-    sending email
-    Open Relay Test
-    TLS Negotiation } for SMTP module
+2. smtp module
+    a. [ Authentication, Login, sending email, Open Relay Test, TLS Negotiation ]

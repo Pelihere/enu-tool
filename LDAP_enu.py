@@ -1,22 +1,27 @@
 import subprocess
 
 
-class LDAP_Enumeration:
+class LDAPEnumeration:
     def __init__(self, target):
         self.target = target
-        self.baseDn = None
+        self.base_dn = None
 
     def anonmyous_enu(self, port):
+        anonymousState = None
         try:
             if port in [389, 636]:
                 anonymousState = subprocess.run(["ldapsearch", "-x", "-H", f"ldap://{self.target}", "-s", "base"],
                                                 capture_output=True,
-                                                text=True)
-                print("ldapsearch is running for anonymouse state ...")
+                                                text=True,
+                                                timeout=10
+                                                )
+                print("[+] running ldapsearch for anonymous state ...")
         except FileNotFoundError:
-            print("ldapsearch is not installed!")
+            print("[-] ldapsearch is not installed!")
+            return None
         except Exception as e:
-            print(f"soemthing went wrong while executing ldapsearch. Error : \n {e}")
+            print(f"[-] something went wrong while executing ldapsearch.\n Error : {e}")
+            return None
 
         return {
             "tool": "ldapsearch",
@@ -29,18 +34,22 @@ class LDAP_Enumeration:
         try:
             rootdseState = subprocess.run(["ldapsearch", "-x", "-H", f"ldap://{self.target}", "-s", "base", "namingContexts"], 
                                             capture_output=True, 
-                                            text=True)
+                                            text=True,
+                                            timeout=10
+                                            )
             
             for line in rootdseState.stdout.splitlines():
                 if line.startswith("namingContexts:"):
-                    self.baseDn = line.split(":", 1)[1].strip()
+                    self.base_dn = line.split(":", 1)[1].strip()
                     break
 
-            print("ldapsearch is runnig for RootDSE enumeration ...")    
+            print("[+] running ldapsearch RootDSE enumeration ...")    
         except FileNotFoundError:
-            print("ldapsearch is not installed!")
+            print("[-] ldapsearch is not installed!")
+            return None
         except Exception as e:
-            print(f"soemthing went wrong while executing ldapsearch. Error : \n {e}")
+            print(f"[-] something went wrong while executing ldapsearch.\n Error : {e}")
+            return None
 
         return {
             "tool" : "ldapsearch",
@@ -51,14 +60,17 @@ class LDAP_Enumeration:
     
     def domain_enu(self):
         try:
-            domainInfo = subprocess.run(["ldapsearch", "-x", "-H", f"ldap://{self.target}", "-b", f"{self.baseDn}"], 
+            domainInfo = subprocess.run(["ldapsearch", "-x", "-H", f"ldap://{self.target}", "-b", f"{self.base_dn}"], 
                                         capture_output=True,
-                                        text=True)
-            print("running ldapsearch for domain enumeration ...")
+                                        text=True,
+                                        timeout=10)
+            print("[+] running ldapsearch for domain enumeration ...")
         except FileNotFoundError:
-            print("ldapsearch is not installed!")
+            print("[-] ldapsearch is not installed!")
+            return None
         except Exception as e:
-            print(f"soemthing went wrong while executing ldapsearch. Error : \n {e}")
+            print(f"[-] something went wrong while executing ldapsearch.\n Error : {e}")
+            return None
         
         return {
             "tool" : "ldapsearch",
@@ -67,17 +79,20 @@ class LDAP_Enumeration:
             "stderr" : domainInfo.stderr,
         }
     
-    def ldap_walker(self, filter):
+    def ldap_walker(self, ldap_filter):
         try:
-            res = subprocess.run(["ldapsearch", "-x", "-b", f"{self.baseDn}", f"(objectClass={filter})", "-H", f"ldap://{self.target}"],
+            res = subprocess.run(["ldapsearch", "-x", "-b", f"{self.base_dn}", f"(objectClass={ldap_filter})", "-H", f"ldap://{self.target}"],
                                 capture_output=True,
-                                text=True)
-            print(f"running ldapsearch for {filter} enumeration ...")
+                                text=True,
+                                timeout=10)
+            print(f"[+] running ldapsearch for {filter} enumeration ...")
         except FileNotFoundError:
-            print("ldapsearch is not installed!")
+            print("[-] ldapsearch is not installed!")
+            return None
         except Exception as e:
-            print(f"soemthing went wrong while executing ldapsearch. Error : \n {e}")
-
+            print(f"[-] something went wrong while executing ldapsearch.\n Error : {e}")
+            return None
+        
         return {
             "tool" : "ldapsearch",
             "success" : res.returncode == 0,
@@ -101,13 +116,13 @@ class LDAP_Enumeration:
         results = {}
 
         self.RootDSE_enu()
-        if self.baseDn is None:
+        if self.base_dn is None:
             return None
 
         results['domain'] = self.domain_enu()
         results['user'] = self.users_enu()
         results['groups'] = self.groups_enu()
         results['computer'] = self.computer_enu()
-        results['organzationalUnits'] = self.organizationalUnits_enu()
+        results['organizationalUnits'] = self.organizationalUnits_enu()
 
         return results 

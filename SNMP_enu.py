@@ -1,6 +1,6 @@
 import subprocess
 
-class SNMP_Enumeration:
+class SNMPEnumeration:
     def __init__(self, target, community="public"):
         self.target = target
         self.community = community

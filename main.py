@@ -1,7 +1,7 @@
 from port_scanner import port_scan
 from smb_Netbios_enu import SMBNetBIOSEnumeration as SNE
-from SNMP_enu import SNMP_Enumeration as SE
-from LDAP_enu import LDAP_Enumeration as LE
+from SNMP_enu import SNMPEnumeration as SE
+from LDAP_enu import LDAPEnumeration as LE
 from SMTP_enu import SMTP_Enumeration as SME
 from DNS_enu import DNS_Enumeration as DE
 from NTP_enu import NTP_Enumeration as NE
