@@ -1,78 +1,43 @@
 import subprocess
 
-class NTP_Enumeration:
+class NTPEnumeration:
     def __init__(self, target):
         self.target = target
 
-    def version_enu(self):
-        verInfo = None
+    def _ntp_walker(self, args, timeout=5):
         try:
-            verInfo = subprocess.run(["ntpq", "-c", "rv", self.target], 
-                                     capture_output=True,
-                                     text=True)
-
-            print("[+] running ntpq for version detection ...")
+            result = subprocess.run(args, capture_output=True, text=True, timeout=timeout)
+            return result
         except FileNotFoundError:
-            print("[-] ntpq is not installed !")
+            print(f"[-] {args[0]} is not installed!")
+        except subprocess.TimeoutExpired:
+            print(f"[-] {args[0]} timed out on {self.target}")
         except Exception as e:
-            print(f"something went wrong while running ntpq. Error: \n {e}")
+            print(f"[-] something went wrong while running {args[0]}. Error:\n{e}")
+        return None
 
-        return verInfo
+    def version_enu(self):
+        print("[+] running ntpq for version detection ...")
+        return self._ntp_walker(["ntpq", "-c", "rv 0 version", self.target])
     
     def peer_enu(self):
-        peerInfo = None
-        try:
-            peerInfo = subprocess.run(["ntpq", "-c", "peers", self.target], 
-                                      capture_output=True,
-                                      text=True)
-            print("[+] running ntpq for peer enumeration ...")
-        
-
-        except Exception as e:
-            print(f"[-] something went wrong while running ntpq. Error: \n {e} ")
-        
-        return peerInfo
+        print("[+] running ntpq for peer enumeration ...")
+        return self._ntp_walker(["ntpq", "-c", "peers", self.target])
 
     def system_valriables_enu(self):
-        sysValInfo = None
-        try:
-            sysValInfo = subprocess.run(["ntpq", "-c", "readvar", self.target], 
-                                        capture_output=True, 
-                                        text=True)
-            print("[+] running ntpq for system variables detection ...")
-        except Exception as e:
-            print(f"[-] something went wrong while running ntpq. Error: \n {e} ")
-        
-        return sysValInfo
-    
+        print("[+] running ntpq for system variables detection ...")
+        return self._ntp_walker(["ntpq", "-c", "readvar", self.target])
+
     def monlist_enu(self):
-        monlistInfo = None
-        try:
-            monlistInfo = subprocess.run(["ntpq", "-c", "monlist", self.target],
-                                         capture_output=True,
-                                         text=True)
-
-            print("[+] running ntpq for Monlist enumeration ...")
-
-        except Exception as e:
-            print(f"[-] something went wrong while running ntpq. Error: \n {e} ")
-
-        return monlistInfo
+        print("[+] running ntpdc for Monlist enumeration ...")
+        print("[*] monlist is old so it may be useless here.")
+        return self._ntp_walker(["ntpdc", "-c", "monlist", self.target])
 
     def sysinfo_enu(self):
-        sysInfo = None
-        try:
-            sysInfo = subprocess.run(["ntpq", "-c", "sysinfo", self.target],
-                                     capture_output=True,
-                                     text=True)        
-            
-            print("[+] running ntpq ...")
+        print("[+] running ntpq ...")
+        return self._ntp_walker(["ntpq", "-c", "sysinfo", self.target])
 
-        except Exception as e:
-            print(f"[-] something went wrong while running ntpq. Error: \n {e} ")
-        
-        return sysInfo
-    
+
     def run(self):
         results = {}
 

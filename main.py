@@ -4,7 +4,7 @@ from SNMP_enu import SNMPEnumeration as SE
 from LDAP_enu import LDAPEnumeration as LE
 from SMTP_enu import SMTPEnumeration as SME
 from DNS_enu import DNSEnumeration as DE
-from NTP_enu import NTP_Enumeration as NE
+from NTP_enu import NTPEnumeration as NE
 from IPsec_enu import IPsec_Enumeration as IE
 from validators import ipv4, domain
 
