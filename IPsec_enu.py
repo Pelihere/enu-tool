@@ -1,46 +1,31 @@
 import subprocess
 
-
-class IPsec_Enumeration:
+class IPsecEnumeration:
 
     def __init__(self, target):
         self.target = target
 
 
-    def IKE_walker(self, command):
-        commandres = None
-        try:
-            commandres = subprocess.run(["ike-scan", command, self.target],
-                                      capture_output=True,
-                                       text=True)
-            
-            print("[+] running ike-scan ... ")
+    def IKE_walker(self, extra_args=None):
+        cmd = ["ike-scan"]
+        if extra_args:
+            cmd.append(extra_args)
+        cmd.append(self.target)
 
+        try:
+            result = subprocess.run(cmd, capture_output=True, text=True, timeout=10)
+            print(f"[+] running ike-scan {extra_args or '(default)'} ...")
+            return result
         except FileNotFoundError:
             print("[-] ike-scan is not installed !")
+        except subprocess.TimeoutExpired:
+            print("[-] connection timed out.")
         except Exception as e:
             print(f"[-] something went wrong while running ike-scan. Error: \n {e}")
-
-        return commandres
+        return None
     
-
     def IKE_enu(self):
-        IKEInfo = None
-        try:
-            IKEInfo = subprocess.run(["ike-scan", self.target],
-                                      capture_output=True,
-                                       text=True)
-            
-            print("[+] running ike-scan for IKE enumeration ... ")
-
-        except FileNotFoundError:
-            print("[-] ike-scan is not installed !")
-        except Exception as e:
-            print(f"[-] something went wrong while running ike-scan. Error: \n {e}")
-
-        return IKEInfo
-    
-
+        return self.IKE_walker()
     
     def fingerprinting_enu(self):
         return self.IKE_walker("--multiline")
@@ -53,15 +38,21 @@ class IPsec_Enumeration:
         try:
             IVInfo = subprocess.run(["nmap", "-sU", "-p500", "--script", "ike-version", self.target], 
                                     capture_output=True, 
-                                    text=True)
+                                    text=True,
+                                    timeout=10)
             
             print("[+] running nmap for ike version enumeration ...")
 
         except FileNotFoundError:
-            print("[-] namp is not installed !")
+            print("[-] nmap is not installed !")
+            return None
+        except subprocess.TimeoutExpired:
+            print("[-] connection timed out.")
+            return None
         except Exception as e:
-            print(f"[-] soemthing went wrong while running nmap. Error: \n {e}")
-
+            print(f"[-] something went wrong while running nmap. Error: \n {e}")
+            return None
+        
         return IVInfo
     
 

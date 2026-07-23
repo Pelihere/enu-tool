@@ -5,7 +5,7 @@ from LDAP_enu import LDAPEnumeration as LE
 from SMTP_enu import SMTPEnumeration as SME
 from DNS_enu import DNSEnumeration as DE
 from NTP_enu import NTPEnumeration as NE
-from IPsec_enu import IPsec_Enumeration as IE
+from IPsec_enu import IPsecEnumeration as IE
 from validators import ipv4, domain
 
 enumeration_modules = {
